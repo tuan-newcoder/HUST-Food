@@ -37,6 +37,7 @@ docs/
 │   └── notifications-admin.api.md       # Cụm 4: Thông báo, Báo cáo vi phạm & Quản trị Admin (8 APIs)
 │
 ├── 05-ui-ux/                            # THIẾT KẾ GIAO DIỆN & TRẢI NGHIỆM
+│   ├── screen-specifications.md         # Đặc tả chi tiết bố cục, khối hiển thị của 9 màn hình chính
 │   ├── design-system.md                 # Màu sắc thương hiệu, Typography, Bộ UI Kit dùng chung
 │   └── wireframes-and-flows.md          # Sơ đồ màn hình chính & Luồng người dùng (Đang cập nhật)
 │
@@ -58,8 +59,8 @@ docs/
 | :--- | :--- | :--- |
 | **Vương (BE 1)** | Backend Lead & Git Master | [03-database/](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/03-database/database-design.md), [04-api-spec/auth-users-bookmarks.api.md](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/04-api-spec/auth-users-bookmarks.api.md), [04-api-spec/posts-comments.api.md](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/04-api-spec/posts-comments.api.md) |
 | **Dũng (BE 2)** | Backend Dev & DevOps | [03-database/](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/03-database/database-design.md), [04-api-spec/places-reviews-maps.api.md](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/04-api-spec/places-reviews-maps.api.md), [04-api-spec/notifications-admin.api.md](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/04-api-spec/notifications-admin.api.md), [06-devops-deployment/](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/06-devops-deployment/environment-variables.md) |
-| **Tuấn (FE 1)** | Frontend Lead & UI Architect | [01-requirements/](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/01-requirements/functional-requirements.md), [05-ui-ux/](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/05-ui-ux/design-system.md), [04-api-spec/auth-users-bookmarks.api.md](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/04-api-spec/auth-users-bookmarks.api.md), [04-api-spec/posts-comments.api.md](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/04-api-spec/posts-comments.api.md) |
-| **Vũ (FE 2)** | Frontend Dev & Map/UI Tester | [01-requirements/](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/01-requirements/functional-requirements.md), [05-ui-ux/](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/05-ui-ux/design-system.md), [04-api-spec/places-reviews-maps.api.md](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/04-api-spec/places-reviews-maps.api.md), [04-api-spec/notifications-admin.api.md](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/04-api-spec/notifications-admin.api.md) |
+| **Tuấn (FE 1)** | Frontend Lead & UI Architect | [01-requirements/](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/01-requirements/functional-requirements.md), [05-ui-ux/screen-specifications.md](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/05-ui-ux/screen-specifications.md), [05-ui-ux/design-system.md](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/05-ui-ux/design-system.md), [04-api-spec/auth-users-bookmarks.api.md](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/04-api-spec/auth-users-bookmarks.api.md) |
+| **Vũ (FE 2)** | Frontend Dev & Map/UI Tester | [01-requirements/](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/01-requirements/functional-requirements.md), [05-ui-ux/screen-specifications.md](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/05-ui-ux/screen-specifications.md), [05-ui-ux/design-system.md](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/05-ui-ux/design-system.md), [04-api-spec/places-reviews-maps.api.md](file:///d:/Hoc/2026.1/Web/HUST-Food/docs/04-api-spec/places-reviews-maps.api.md) |
 
 ---
 
