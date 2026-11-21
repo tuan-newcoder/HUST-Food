@@ -1,184 +1,252 @@
 import React from 'react';
+import {
+  Flame,
+  MapPin,
+  Store,
+  Bookmark,
+  User,
+  PlusCircle,
+  UtensilsCrossed,
+  LogOut,
+  LogIn,
+  X,
+} from 'lucide-react';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { Avatar } from '@/components/common/Avatar';
+import { Button } from '@/components/common/Button';
+import { ThemeToggle } from '@/components/common/ThemeToggle';
+import { toast } from '@/components/feedback/Toast';
+import { cn } from '@/utils/cn';
 
 interface SidebarProps {
   activeTab?: string;
   onTabChange?: (tab: string) => void;
   onOpenCreatePost?: () => void;
+  onOpenAuth?: () => void;
+  isMobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   activeTab = 'home',
   onTabChange = () => {},
   onOpenCreatePost = () => {},
+  onOpenAuth,
+  isMobileOpen = false,
+  onCloseMobile,
 }) => {
+  const { user, isAuthenticated, logout } = useAuthStore();
+
+  const handleLogout = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    logout();
+    toast.info('Bạn đã đăng xuất tài khoản');
+  };
+
   const navItems = [
     {
       id: 'home',
-      label: 'Home',
-      icon: (
-        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-          <polyline points="9 22 9 12 15 12 15 22"/>
-        </svg>
-      ),
+      label: 'Bảng tin',
+      icon: <Flame className="w-5 h-5 shrink-0" />,
     },
     {
       id: 'map',
-      label: 'Food Map',
-      icon: (
-        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
-          <circle cx="12" cy="10" r="3"/>
-        </svg>
-      ),
+      label: 'Bản đồ ẩm thực',
+      icon: <MapPin className="w-5 h-5 shrink-0" />,
     },
     {
       id: 'places',
-      label: 'Places',
-      icon: (
-        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/>
-          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-          <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/>
-          <path d="M2 7h20"/>
-          <path d="M22 7v3a2 2 0 0 1-2 2v0a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 10V7"/>
-        </svg>
-      ),
+      label: 'Quán ăn & Địa điểm',
+      icon: <Store className="w-5 h-5 shrink-0" />,
     },
     {
       id: 'bookmarks',
-      label: 'Bookmarks',
-      icon: (
-        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
-        </svg>
-      ),
+      label: 'Mục đã lưu',
+      icon: <Bookmark className="w-5 h-5 shrink-0" />,
     },
     {
       id: 'profile',
-      label: 'My Profile',
-      icon: (
-        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-          <circle cx="12" cy="7" r="4"/>
-        </svg>
-      ),
+      label: 'Trang cá nhân',
+      icon: <User className="w-5 h-5 shrink-0" />,
     },
   ];
 
-  return (
-    <aside className="w-[308px] h-screen fixed left-0 top-0 bg-white border-r border-[#E2E8F0] flex flex-col justify-between z-30 select-none">
+  const sidebarContent = (
+    <div className="flex flex-col justify-between h-full p-6 select-none bg-white dark:bg-[#151D2C] transition-colors duration-150">
       {/* Top Part: Logo & Navigation */}
-      <div className="p-6 overflow-y-auto">
-        {/* Logo */}
-        <div className="flex items-center gap-3.5 mb-8 cursor-pointer" onClick={() => onTabChange('home')}>
-          <div className="w-[42px] h-[42px] rounded-[13px] bg-[#E11D48] flex items-center justify-center shadow-md shadow-rose-500/20">
-            {/* Soup bowl icon matching Figma */}
-            <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 11h16a8 8 0 0 1-16 0Z" />
-              <path d="M8 19h8" />
-              <path d="M7 4c-1 1.5 1 1.5 0 3" />
-              <path d="M12 3c-1 1.5 1 1.5 0 3" />
-              <path d="M17 4c-1 1.5 1 1.5 0 3" />
-            </svg>
-          </div>
-          <div>
-            <div className="text-xl font-bold tracking-tight text-[#0F172A] leading-tight flex items-center gap-1">
-              HUST<span className="text-[#E11D48]">-FOOD</span>
+      <div className="overflow-y-auto">
+        {/* Logo Brand */}
+        <div className="flex items-center justify-between mb-8">
+          <div
+            className="flex items-center gap-3.5 cursor-pointer group"
+            onClick={() => {
+              onTabChange('home');
+              onCloseMobile?.();
+            }}
+          >
+            <div className="w-11 h-11 rounded-2xl bg-brand-600 flex items-center justify-center shadow-md shadow-rose-500/20 group-hover:scale-105 transition-all">
+              <UtensilsCrossed className="w-6 h-6 text-white" />
             </div>
-            <div className="text-[10px] tracking-wider font-semibold text-[#64748B] uppercase">
-              Ẩm thực Bách Khoa
+            <div>
+              <div className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+                HUST<span className="text-brand-600">-FOOD</span>
+              </div>
+              <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 tracking-wide uppercase">
+                Ẩm thực Bách Khoa
+              </div>
             </div>
           </div>
+
+          {/* Close button on mobile drawer */}
+          {onCloseMobile && (
+            <button
+              type="button"
+              onClick={onCloseMobile}
+              className="lg:hidden p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
         </div>
 
-        {/* Section Title */}
-        <div className="text-[11px] font-bold tracking-wider text-[#64748B] uppercase mb-3 px-3">
-          Khám phá
+        {/* Create Post Action Button */}
+        <div className="mb-6">
+          <Button
+            variant="primary"
+            size="lg"
+            onClick={() => {
+              onOpenCreatePost();
+              onCloseMobile?.();
+            }}
+            leftIcon={<PlusCircle className="w-5 h-5" />}
+            className="w-full shadow-md shadow-rose-500/20"
+          >
+            Đăng bài viết mới
+          </Button>
         </div>
 
-        {/* Nav Items */}
-        <nav className="space-y-1.5 mb-8">
+        {/* Navigation Links */}
+        <nav className="space-y-1.5" aria-label="Menu chính">
           {navItems.map((item) => {
             const isActive = activeTab === item.id;
             return (
               <button
                 key={item.id}
-                onClick={() => onTabChange(item.id)}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-[15px] font-semibold transition-all duration-200 ${
+                type="button"
+                onClick={() => {
+                  onTabChange(item.id);
+                  onCloseMobile?.();
+                }}
+                className={cn(
+                  'w-full min-h-[48px] flex items-center gap-3.5 px-4 py-3 rounded-2xl font-semibold text-sm transition-all duration-200 text-left',
                   isActive
-                    ? 'bg-[#FFF1F2] text-[#E11D48]'
-                    : 'text-[#64748B] hover:bg-slate-50 hover:text-[#0F172A]'
-                }`}
+                    ? 'bg-rose-50 dark:bg-rose-950/40 text-brand-600 dark:text-rose-400 font-bold shadow-sm'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/60'
+                )}
               >
-                <div className="flex items-center gap-3.5">
-                  <span className={isActive ? 'text-[#E11D48]' : 'text-[#64748B]'}>
-                    {item.icon}
-                  </span>
-                  <span>{item.label}</span>
-                </div>
+                <span
+                  className={cn(
+                    'transition-colors',
+                    isActive ? 'text-brand-600 dark:text-rose-400' : 'text-slate-500 dark:text-slate-400'
+                  )}
+                >
+                  {item.icon}
+                </span>
+                <span>{item.label}</span>
                 {isActive && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#E11D48]" />
+                  <span className="ml-auto w-1.5 h-5 rounded-full bg-brand-600" />
                 )}
               </button>
             );
           })}
         </nav>
-
-        {/* Action Button: Tạo bài viết */}
-        <button
-          onClick={onOpenCreatePost}
-          className="w-full h-[50px] rounded-xl bg-[#E11D48] text-white font-semibold text-[15px] flex items-center justify-center gap-2 shadow-lg shadow-rose-500/25 hover:bg-rose-700 active:scale-[0.98] transition-all"
-        >
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"/>
-            <line x1="5" y1="12" x2="19" y2="12"/>
-          </svg>
-          <span>Tạo bài viết</span>
-        </button>
-
-        {/* Promo card / Mẹo hay hôm nay */}
-        <div className="mt-6 p-4 rounded-2xl bg-[#FFFBEB] border border-amber-200/60 text-xs">
-          <div className="flex items-center gap-2 font-bold text-[#0F172A] mb-1.5">
-            <span className="text-amber-500">💡</span>
-            <span>Mẹo hay hôm nay</span>
-          </div>
-          <p className="text-[#B45309] leading-relaxed">
-            Khám phá <strong>Bản đồ ẩm thực</strong> quanh Bách Khoa để tìm các quán ăn chuẩn ngon - bổ - rẻ nhé!
-          </p>
-        </div>
       </div>
 
-      {/* Bottom Part: User info card */}
-      <div className="p-4 border-t border-[#E2E8F0] bg-white">
-        <div className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 transition">
-          <div className="flex items-center gap-3">
-            <img
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces"
-              alt="Nguyễn Văn A"
-              className="w-10 h-10 rounded-full object-cover ring-2 ring-rose-100"
-            />
-            <div className="text-left">
-              <div className="text-sm font-bold text-[#0F172A] leading-tight">
-                Nguyễn Văn A
-              </div>
-              <div className="text-xs text-[#64748B]">
-                @nguyenvana • K66
+      {/* Bottom Part: Theme Toggle & User Info / Auth */}
+      <div className="pt-4 border-t border-slate-200/80 dark:border-slate-800 space-y-3">
+        {/* Theme Mode Toggle Pill Switch */}
+        <div>
+          <ThemeToggle variant="pill" showLabel className="w-full" />
+        </div>
+
+        {isAuthenticated && user ? (
+          <div
+            onClick={() => {
+              onTabChange('profile');
+              onCloseMobile?.();
+            }}
+            className="flex items-center justify-between p-2.5 rounded-2xl hover:bg-slate-100/80 dark:hover:bg-slate-800/80 transition cursor-pointer group"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <Avatar
+                src={user.avatarUrl}
+                name={user.fullName}
+                size="md"
+                className="ring-2 ring-rose-200 dark:ring-rose-900"
+              />
+              <div className="min-w-0">
+                <div className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate group-hover:text-brand-600 transition">
+                  {user.fullName}
+                </div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                  @{user.username}
+                </div>
               </div>
             </div>
+
+            <button
+              type="button"
+              title="Đăng xuất"
+              onClick={handleLogout}
+              className="p-2 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 transition min-w-[44px] min-h-[44px] flex items-center justify-center"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
           </div>
-          <button
-            title="Đăng xuất"
-            className="p-2 text-[#64748B] hover:text-[#E11D48] hover:bg-rose-50 rounded-lg transition"
-          >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16 17 21 12 16 7"/>
-              <line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-          </button>
-        </div>
+        ) : (
+          <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200/80 dark:border-slate-700/60 text-center">
+            <p className="text-xs text-slate-600 dark:text-slate-400 mb-2.5 font-medium">
+              Đăng nhập để chia sẻ quán ngon và lưu địa điểm yêu thích
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                onOpenAuth?.();
+                onCloseMobile?.();
+              }}
+              leftIcon={<LogIn className="w-4 h-4" />}
+              className="w-full bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 min-h-[44px]"
+            >
+              Đăng nhập ngay
+            </Button>
+          </div>
+        )}
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Desktop Fixed Sidebar */}
+      <aside className="hidden lg:flex w-[280px] xl:w-[308px] h-screen fixed left-0 top-0 bg-white dark:bg-[#151D2C] border-r border-slate-200/80 dark:border-slate-800 flex-col z-30 transition-colors duration-150">
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile Drawer (When open) */}
+      {isMobileOpen && (
+        <div className="lg:hidden fixed inset-0 z-50 flex">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm"
+            onClick={onCloseMobile}
+          />
+          {/* Drawer Panel */}
+          <div className="relative w-[300px] max-w-[85vw] h-full bg-white dark:bg-[#151D2C] shadow-2xl z-10 flex flex-col transition-colors duration-150">
+            {sidebarContent}
+          </div>
+        </div>
+      )}
+    </>
   );
 };

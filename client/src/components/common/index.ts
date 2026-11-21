@@ -3,4 +3,5 @@ export * from './Input';
 export * from './Modal';
 export * from './Dropdown';
 export * from './Avatar';
-
+export * from './StarRating';
+export * from './ThemeToggle';

@@ -5,6 +5,23 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HUST-Food - Mạng xã hội Ẩm thực Bách Khoa</title>
+    <!-- Prevent theme flash script -->
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem('hust_food_theme') || 'light';
+          var isDark =
+            saved === 'dark' ||
+            (saved === 'system' &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (_) {}
+      })();
+    </script>
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -13,7 +30,7 @@
       rel="stylesheet"
     />
   </head>
-  <body class="bg-[#F8FAFC] text-[#0F172A] font-sans antialiased selection:bg-rose-500 selection:text-white">
+  <body class="bg-slate-50 text-slate-900 dark:bg-[#0B0F19] dark:text-slate-100 font-sans antialiased selection:bg-rose-500 selection:text-white transition-colors duration-150">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
