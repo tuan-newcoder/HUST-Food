@@ -38,6 +38,7 @@ docs/
 │
 ├── 05-ui-ux/                            # THIẾT KẾ GIAO DIỆN & TRẢI NGHIỆM
 │   ├── screen-specifications.md         # Đặc tả chi tiết bố cục, khối hiển thị của 9 màn hình chính
+│   ├── figma-prompts.md                 # Bộ Prompt chuẩn Figma AI / UI Generator cho cả 9 màn hình
 │   ├── design-system.md                 # Màu sắc thương hiệu, Typography, Bộ UI Kit dùng chung
 │   └── wireframes-and-flows.md          # Sơ đồ màn hình chính & Luồng người dùng (Đang cập nhật)
 │

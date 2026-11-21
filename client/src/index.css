@@ -1,3 +1,5 @@
+@import 'leaflet/dist/leaflet.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -20,6 +22,47 @@ body {
 .dark body {
   background-color: #0B0F19;
   color: #F8FAFC;
+}
+
+/* Leaflet map fix & customizations */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  font-family: inherit;
+}
+
+.leaflet-control-zoom {
+  display: none !important; /* We use custom UI buttons from design */
+}
+
+.leaflet-control-attribution {
+  display: none !important; /* We render the exact attribution matching Figma */
+}
+
+/* Custom Pulsing Beacon for User Location */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 16px rgba(59, 130, 246, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+
+.user-beacon {
+  width: 18px;
+  height: 18px;
+  background-color: #2563EB;
+  border: 3px solid #FFFFFF;
+  border-radius: 50%;
+  animation: pulse-ring 2s infinite;
 }
 
 /* Custom Scrollbar */
