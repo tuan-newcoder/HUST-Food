@@ -3,4 +3,5 @@ export * from './user.types';
 export * from './post.types';
 export * from './comment.types';
 export * from './bookmark.types';
-
+export * from './place.types';
+export * from './report.types';
