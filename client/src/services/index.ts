@@ -5,3 +5,6 @@ export * from './bookmarkService';
 export * from './postService';
 export * from './commentService';
 export * from './reportService';
+export * from './placeService';
+export * from './reviewService';
+export * from './notificationService';
