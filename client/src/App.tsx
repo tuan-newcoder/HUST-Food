@@ -11,14 +11,22 @@ import { RegisterPage } from './features/auth/pages/RegisterPage';
 import { ForgotPasswordPage } from './features/auth/pages/ForgotPasswordPage';
 import { AuthModal } from './features/auth/components/AuthModal';
 import { CreatePostModal } from './features/posts/components/CreatePostModal';
+import { PlacesPage } from './features/places/pages/PlacesPage';
+import { PlaceDetailPage } from './features/places/pages/PlaceDetailPage';
+import { AddPlacePage } from './features/places/pages/AddPlacePage';
+import { NotificationsPage } from './features/notifications/pages/NotificationsPage';
 import { ToastContainer, toast } from './components/feedback/Toast';
 import { useAuthStore } from './stores/useAuthStore';
 import { useThemeStore } from './stores/useThemeStore';
-import { Store } from 'lucide-react';
+import { AppNotification } from './types/notification.types';
+
+const TABS = ['home', 'map', 'places', 'add-place', 'notifications', 'bookmarks', 'profile', 'login', 'register', 'forgot'];
+const AUTH_TABS = ['add-place', 'notifications', 'bookmarks', 'profile'];
 
 export function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+  const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -33,13 +41,14 @@ export function App() {
     initTheme();
   }, [initTheme]);
 
-  // Đọc hash từ URL (ví dụ: #map, #profile, #bookmarks, #login)
+  // Đọc hash từ URL (ví dụ: #map, #places, #places/place_01, #notifications, #login)
   useEffect(() => {
     const handleHash = () => {
-      const hash = window.location.hash.replace('#', '');
-      if (['home', 'map', 'places', 'bookmarks', 'profile', 'login', 'register', 'forgot'].includes(hash)) {
-        setActiveTab(hash);
+      const [tab, id] = window.location.hash.replace('#', '').split('/');
+      if (TABS.includes(tab)) {
+        setActiveTab(tab);
         setSelectedPostId(null);
+        setSelectedPlaceId(tab === 'places' && id ? id : null);
       }
     };
     handleHash();
@@ -47,11 +56,44 @@ export function App() {
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
+  // Trang cần đăng nhập: chuyển về Bảng tin + mở popup đăng nhập
+  useEffect(() => {
+    if (!isAuthenticated && AUTH_TABS.includes(activeTab)) {
+      setActiveTab('home');
+      window.location.hash = '';
+      setAuthModalMode('login');
+      setIsAuthModalOpen(true);
+    }
+  }, [activeTab, isAuthenticated]);
+
+  // Cuộn lên đầu mỗi khi đổi màn hình
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [activeTab, selectedPlaceId]);
+
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
     setSelectedPostId(null);
+    setSelectedPlaceId(null);
     setIsMobileMenuOpen(false);
     window.location.hash = tab === 'home' ? '' : tab;
+  };
+
+  const handleOpenPlace = (placeId: string) => {
+    setActiveTab('places');
+    setSelectedPlaceId(placeId);
+    setSelectedPostId(null);
+    window.location.hash = `places/${placeId}`;
+  };
+
+  const handleOpenNotification = (n: AppNotification) => {
+    if (n.post) {
+      handleTabChange('home');
+      setSelectedPostId(n.post._id);
+    } else {
+      // Thông báo FOLLOW: chưa có trang hồ sơ người khác → mở trang cá nhân
+      handleTabChange('profile');
+    }
   };
 
   const handleSearch = (query: string) => {
@@ -75,10 +117,6 @@ export function App() {
   const handleOpenAuth = (mode: 'login' | 'register' | 'forgot' = 'login') => {
     setAuthModalMode(mode);
     setIsAuthModalOpen(true);
-  };
-
-  const handleNavigatePlace = (placeId: string) => {
-    toast.info(`Chuyển hướng sang chi tiết địa điểm: ${placeId}`, 'Địa điểm ẩm thực');
   };
 
   return (
@@ -122,13 +160,15 @@ export function App() {
           onOpenBookmarks={() => handleTabChange('bookmarks')}
           onOpenAuth={() => handleOpenAuth('login')}
           onToggleMobileMenu={() => setIsMobileMenuOpen(true)}
+          onOpenNotification={handleOpenNotification}
+          onViewAllNotifications={() => handleTabChange('notifications')}
         />
 
         {/* Page Content */}
         {activeTab === 'map' ? (
           /* SCR-02: Bản đồ Ẩm thực Bách Khoa - Leaflet/Mapbox Full-Bleed Canvas */
           <main className="flex-1 w-full h-[calc(100vh-82px)] overflow-hidden relative">
-            <FoodMapView onNavigatePlaceDetail={handleNavigatePlace} />
+            <FoodMapView onNavigatePlaceDetail={handleOpenPlace} />
           </main>
         ) : (
           <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-6xl mx-auto w-full">
@@ -143,22 +183,32 @@ export function App() {
             )}
 
             {/* SCR-03: Danh bạ Quán ăn & Địa điểm (/places) */}
-            {activeTab === 'places' && (
-              <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-12 border border-slate-100 dark:border-slate-800 text-center shadow-sm max-w-2xl mx-auto">
-                <div className="w-16 h-16 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-100 dark:border-amber-900/50 text-amber-600 flex items-center justify-center mx-auto mb-4 shadow-sm">
-                  <Store className="w-8 h-8" />
-                </div>
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-                  Danh bạ Quán ăn & Địa điểm (/places)
-                </h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed mb-6">
-                  Màn hình SCR-03 tổng hợp danh bạ toàn bộ quán xá Tạ Quang Bửu, Lê Thanh Nghị, Trần Đại Nghĩa.
-                </p>
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold border border-slate-200 dark:border-slate-700">
-                  <Store className="w-4 h-4 text-amber-600" />
-                  <span>Tra cứu thực đơn, bảng giá & giờ mở cửa</span>
-                </div>
-              </div>
+            {activeTab === 'places' && !selectedPlaceId && (
+              <PlacesPage
+                onSelectPlace={handleOpenPlace}
+                onAddPlace={() => handleTabChange('add-place')}
+                onRequireAuth={() => handleOpenAuth('login')}
+              />
+            )}
+
+            {/* SCR-04: Chi tiết Quán ăn & Đánh giá (/places/:id) */}
+            {activeTab === 'places' && selectedPlaceId && (
+              <PlaceDetailPage
+                placeId={selectedPlaceId}
+                onBack={() => handleTabChange('places')}
+                onOpenMap={() => handleTabChange('map')}
+                onRequireAuth={() => handleOpenAuth('login')}
+              />
+            )}
+
+            {/* F08: Đóng góp quán mới (/places/new) */}
+            {activeTab === 'add-place' && (
+              <AddPlacePage onCancel={() => handleTabChange('places')} onCreated={handleOpenPlace} />
+            )}
+
+            {/* F21–F22: Hộp thư thông báo */}
+            {activeTab === 'notifications' && (
+              <NotificationsPage onOpenNotification={handleOpenNotification} />
             )}
 
             {/* SCR-07: Quản lý danh sách đã lưu (Bookmarks) */}

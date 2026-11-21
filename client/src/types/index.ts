@@ -5,3 +5,5 @@ export * from './comment.types';
 export * from './bookmark.types';
 export * from './place.types';
 export * from './report.types';
+export * from './review.types';
+export * from './notification.types';

@@ -36,6 +36,9 @@ interface ProfilePageProps {
 }
 
 // Sample posts authored by this user
+const PROFILE_COVER =
+  'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1600&h=500&fit=crop';
+
 const SAMPLE_USER_POSTS: Post[] = [
   {
     _id: 'post_u1',
@@ -131,46 +134,36 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
     <div className="space-y-6 max-w-5xl mx-auto pb-12 animate-in fade-in duration-200">
       {/* 1. Profile Header Card */}
       <div className="bg-white dark:bg-[#151D2C] rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden transition-colors duration-150">
-        {/* Cover Banner */}
-        <div className="h-44 sm:h-56 w-full bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 relative">
-          <div className="absolute inset-0 bg-black/15" />
-          <div className="absolute bottom-3 right-4 bg-white/25 backdrop-blur-md px-3.5 py-1.5 rounded-xl text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm">
+        {/* Cover Banner — ảnh trang trí (User chưa có trường coverImage trong CSDL) */}
+        <div className="relative h-36 sm:h-52 w-full overflow-hidden bg-rose-600">
+          <img
+            src={PROFILE_COVER}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
+          <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-black/35 backdrop-blur-md px-3 py-1.5 rounded-xl text-white text-xs font-semibold flex items-center gap-1.5">
             <MapPin className="w-3.5 h-3.5" />
             <span>Khu vực Bách Khoa • Hà Nội</span>
           </div>
         </div>
 
         {/* Profile Info Row */}
-        <div className="px-6 sm:px-8 pb-8 pt-0 relative">
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 -mt-16 sm:-mt-20 mb-6">
-            {/* Avatar & Identifiers */}
-            <div className="flex flex-col sm:flex-row items-center sm:items-end gap-4 text-center sm:text-left">
-              <div className="relative">
-                <Avatar
-                  src={profileUser.avatarUrl}
-                  name={profileUser.fullName}
-                  size="xl"
-                  className="w-28 h-28 sm:w-32 sm:h-32 ring-4 ring-white dark:ring-slate-900 shadow-xl text-3xl"
-                />
-              </div>
-
-              <div className="mb-2">
-                <div className="flex items-center justify-center sm:justify-start gap-2">
-                  <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
-                    {profileUser.fullName}
-                  </h1>
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 dark:bg-rose-950/40 text-brand-600 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60">
-                    K66 • HUST
-                  </span>
-                </div>
-                <div className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-                  @{profileUser.username}
-                </div>
-              </div>
+        <div className="px-5 sm:px-8 pb-8 relative">
+          {/* Hàng 1: Avatar (nhô lên ảnh bìa) + nút hành động (nằm hẳn dưới ảnh bìa) */}
+          <div className="flex items-end justify-between gap-3">
+            <div className="-mt-12 sm:-mt-16 relative z-10 shrink-0">
+              <Avatar
+                src={profileUser.avatarUrl}
+                name={profileUser.fullName}
+                size="xl"
+                className="w-24 h-24 sm:w-32 sm:h-32 ring-4 ring-white dark:ring-[#151D2C] shadow-xl text-3xl"
+              />
             </div>
 
             {/* Action buttons */}
-            <div className="flex items-center justify-center gap-2.5">
+            <div className="flex items-center gap-2.5 pt-3">
               {isOwnProfile ? (
                 <>
                   <Button
@@ -180,7 +173,8 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                     leftIcon={<Settings className="w-4 h-4" />}
                     className="min-h-[44px]"
                   >
-                    Chỉnh sửa hồ sơ
+                    <span className="sm:hidden">Sửa hồ sơ</span>
+                    <span className="hidden sm:inline">Chỉnh sửa hồ sơ</span>
                   </Button>
                   <button
                     type="button"
@@ -214,8 +208,23 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             </div>
           </div>
 
+          {/* Hàng 2: Tên & username — luôn nằm dưới ảnh bìa, không đè lên mép */}
+          <div className="mt-3 mb-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+                {profileUser.fullName}
+              </h1>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 dark:bg-rose-950/40 text-brand-600 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60">
+                K66 • HUST
+              </span>
+            </div>
+            <div className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+              @{profileUser.username}
+            </div>
+          </div>
+
           {/* Bio text */}
-          <div className="max-w-2xl text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-6 text-center sm:text-left">
+          <div className="max-w-2xl text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
             {profileUser.bio ||
               'Chưa có tiểu sử giới thiệu. Nhấn "Chỉnh sửa hồ sơ" để cập nhật sở thích ăn uống của bạn.'}
           </div>
@@ -228,11 +237,11 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             </div>
 
             {/* 3 Clickable Stats Counters */}
-            <div className="flex items-center gap-6">
+            <div className="grid grid-cols-3 w-full sm:w-auto sm:flex sm:items-center sm:gap-6 text-center sm:text-left whitespace-nowrap">
               <button
                 type="button"
                 onClick={() => setFollowersModalTitle('Người theo dõi')}
-                className="min-h-[44px] flex items-center gap-1.5 hover:text-brand-600 dark:hover:text-rose-400 transition group select-none"
+                className="min-h-[44px] flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 hover:text-brand-600 dark:hover:text-rose-400 transition group select-none"
               >
                 <span className="font-extrabold text-slate-900 dark:text-slate-100 group-hover:text-brand-600 dark:group-hover:text-rose-400 text-sm">
                   {followersCount}
@@ -243,7 +252,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
               <button
                 type="button"
                 onClick={() => setFollowersModalTitle('Đang theo dõi')}
-                className="min-h-[44px] flex items-center gap-1.5 hover:text-brand-600 dark:hover:text-rose-400 transition group select-none"
+                className="min-h-[44px] flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 hover:text-brand-600 dark:hover:text-rose-400 transition group select-none"
               >
                 <span className="font-extrabold text-slate-900 dark:text-slate-100 group-hover:text-brand-600 dark:group-hover:text-rose-400 text-sm">
                   {profileUser.followingCount}
@@ -251,7 +260,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                 <span className="text-slate-500 dark:text-slate-400 font-medium">Đang theo dõi</span>
               </button>
 
-              <div className="min-h-[44px] flex items-center gap-1.5">
+              <div className="min-h-[44px] flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5">
                 <span className="font-extrabold text-slate-900 dark:text-slate-100 text-sm">
                   {profileUser.postsCount || SAMPLE_USER_POSTS.length}
                 </span>
@@ -263,12 +272,12 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
       </div>
 
       {/* 2. Main Profile Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex items-center gap-1 sm:gap-2 border-b border-slate-200 dark:border-slate-800 overflow-x-auto [scrollbar-width:none]">
         <button
           type="button"
           onClick={() => setActiveTab('posts')}
           className={cn(
-            'min-h-[44px] pb-3.5 px-4 font-bold text-xs sm:text-sm flex items-center gap-2 border-b-2 transition-all select-none',
+            'min-h-[44px] pb-3.5 px-3 sm:px-4 font-bold text-xs sm:text-sm flex items-center gap-2 border-b-2 transition-all select-none whitespace-nowrap shrink-0',
             activeTab === 'posts'
               ? 'border-brand-600 text-brand-600 dark:border-rose-400 dark:text-rose-400'
               : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
@@ -282,7 +291,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
           type="button"
           onClick={() => setActiveTab('places')}
           className={cn(
-            'min-h-[44px] pb-3.5 px-4 font-bold text-xs sm:text-sm flex items-center gap-2 border-b-2 transition-all select-none',
+            'min-h-[44px] pb-3.5 px-3 sm:px-4 font-bold text-xs sm:text-sm flex items-center gap-2 border-b-2 transition-all select-none whitespace-nowrap shrink-0',
             activeTab === 'places'
               ? 'border-brand-600 text-brand-600 dark:border-rose-400 dark:text-rose-400'
               : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
@@ -297,7 +306,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             type="button"
             onClick={() => setActiveTab('bookmarks')}
             className={cn(
-              'min-h-[44px] pb-3.5 px-4 font-bold text-xs sm:text-sm flex items-center gap-2 border-b-2 transition-all select-none',
+              'min-h-[44px] pb-3.5 px-3 sm:px-4 font-bold text-xs sm:text-sm flex items-center gap-2 border-b-2 transition-all select-none whitespace-nowrap shrink-0',
               activeTab === 'bookmarks'
                 ? 'border-brand-600 text-brand-600 dark:border-rose-400 dark:text-rose-400'
                 : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   Search,
-  Bell,
   MessageSquare,
   LogIn,
   User as UserIcon,
@@ -17,6 +16,8 @@ import { Dropdown } from '@/components/common/Dropdown';
 import { Button } from '@/components/common/Button';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { toast } from '@/components/feedback/Toast';
+import { NotificationBell } from '@/features/notifications/components/NotificationBell';
+import { AppNotification } from '@/types/notification.types';
 
 interface HeaderProps {
   onSearch?: (query: string) => void;
@@ -24,6 +25,8 @@ interface HeaderProps {
   onOpenBookmarks?: () => void;
   onOpenAuth?: () => void;
   onToggleMobileMenu?: () => void;
+  onOpenNotification?: (n: AppNotification) => void;
+  onViewAllNotifications?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -32,6 +35,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenBookmarks,
   onOpenAuth,
   onToggleMobileMenu,
+  onOpenNotification,
+  onViewAllNotifications,
 }) => {
   const [searchValue, setSearchValue] = useState('');
   const { user, isAuthenticated, logout } = useAuthStore();
@@ -97,16 +102,13 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Theme Mode Toggle Button */}
           <ThemeToggle />
 
-          {/* Notification Button */}
-          <button
-            type="button"
-            title="Thông báo"
-            onClick={() => toast.info('Chưa có thông báo mới')}
-            className="min-w-[44px] min-h-[44px] rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center justify-center relative shadow-sm transition"
-          >
-            <Bell className="w-5 h-5" />
-            <span className="w-2.5 h-2.5 rounded-full bg-brand-600 absolute top-2.5 right-2.5 ring-2 ring-white dark:ring-slate-800" />
-          </button>
+          {/* Notification Bell (F21–F22) — chỉ hiển thị khi đã đăng nhập */}
+          {isAuthenticated && (
+            <NotificationBell
+              onOpenNotification={(n) => onOpenNotification?.(n)}
+              onViewAll={() => onViewAllNotifications?.()}
+            />
+          )}
 
           {/* Chat / Messages Button */}
           <button
