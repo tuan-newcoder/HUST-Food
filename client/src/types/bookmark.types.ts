@@ -1,3 +1,6 @@
+import { Place } from './place.types';
+import { Post } from './post.types';
+
 export type BookmarkTargetType = 'PLACE' | 'POST';
 
 export interface Bookmark {
@@ -6,6 +9,8 @@ export interface Bookmark {
   targetType: BookmarkTargetType;
   placeId?: string;
   postId?: string;
+  place?: Place;
+  post?: Post;
   createdAt: string;
 }
 
@@ -19,4 +24,3 @@ export interface ToggleBookmarkResult {
   targetId: string;
   isBookmarked: boolean;
 }
-

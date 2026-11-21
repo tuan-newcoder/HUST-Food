@@ -51,7 +51,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       {isOpen && (
         <div
           className={cn(
-            'absolute z-50 mt-2 w-56 rounded-2xl bg-white p-1.5 shadow-xl ring-1 ring-black/5 focus:outline-none animate-in fade-in zoom-in-95 duration-100',
+            'absolute z-50 mt-2 w-56 rounded-2xl bg-white dark:bg-[#151D2C] p-1.5 shadow-xl ring-1 ring-black/5 dark:ring-white/10 border border-slate-100 dark:border-slate-800 focus:outline-none animate-in fade-in zoom-in-95 duration-100',
             align === 'right' ? 'right-0' : 'left-0',
             className
           )}
@@ -60,7 +60,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
             ? children
             : items?.map((item, idx) => (
                 <React.Fragment key={item.id || idx}>
-                  {item.divider && <div className="my-1 border-t border-slate-100" />}
+                  {item.divider && <div className="my-1 border-t border-slate-100 dark:border-slate-800" />}
                   <button
                     type="button"
                     onClick={() => {
@@ -70,8 +70,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
                     className={cn(
                       'flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium transition-colors text-left',
                       item.danger
-                        ? 'text-red-600 hover:bg-red-50'
-                        : 'text-slate-700 hover:bg-slate-100'
+                        ? 'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40'
+                        : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
                     )}
                   >
                     {item.icon && <span className="w-4 h-4 shrink-0">{item.icon}</span>}
@@ -84,4 +84,3 @@ export const Dropdown: React.FC<DropdownProps> = ({
     </div>
   );
 };
-

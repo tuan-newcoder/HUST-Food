@@ -45,7 +45,7 @@ export const Avatar: React.FC<AvatarProps> = ({
     <div className="relative inline-block shrink-0">
       <div
         className={cn(
-          'flex items-center justify-center rounded-full font-bold uppercase select-none overflow-hidden bg-gradient-to-tr from-brand-600 to-accent-500 text-white shadow-sm',
+          'flex items-center justify-center rounded-full font-bold uppercase select-none overflow-hidden bg-rose-50 dark:bg-rose-950/50 text-brand-600 dark:text-rose-300 border border-rose-200/80 dark:border-rose-900/60 shadow-sm transition-all',
           sizeClasses[size],
           className
         )}
@@ -56,6 +56,7 @@ export const Avatar: React.FC<AvatarProps> = ({
             alt={name}
             onError={() => setImageError(true)}
             className="w-full h-full object-cover"
+            loading="lazy"
           />
         ) : (
           <span>{getInitials(name)}</span>
@@ -65,7 +66,7 @@ export const Avatar: React.FC<AvatarProps> = ({
       {status && (
         <span
           className={cn(
-            'absolute bottom-0 right-0 rounded-full ring-white',
+            'absolute bottom-0 right-0 rounded-full ring-2 ring-white dark:ring-slate-900',
             statusSize[size],
             status === 'online' && 'bg-emerald-500',
             status === 'offline' && 'bg-slate-400',
@@ -76,4 +77,3 @@ export const Avatar: React.FC<AvatarProps> = ({
     </div>
   );
 };
-

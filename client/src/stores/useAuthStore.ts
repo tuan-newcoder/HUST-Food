@@ -1,6 +1,22 @@
 import { create } from 'zustand';
 import { User } from '@/types/user.types';
 
+export const DEMO_USER: User = {
+  _id: 'usr_hust_01',
+  username: 'tuan_le',
+  fullName: 'Lê Anh Tuấn',
+  email: 'tuan.la@sis.hust.edu.vn',
+  avatarUrl:
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=faces',
+  bio: 'Sinh viên K66 Bách Khoa • Đam mê săn lùng quán ngon Tạ Quang Bửu, bún cá cay và cà phê học bài 🍜☕',
+  role: 'USER',
+  status: 'ACTIVE',
+  followersCount: 142,
+  followingCount: 38,
+  postsCount: 12,
+  createdAt: '2026-10-15T08:00:00Z',
+};
+
 interface AuthState {
   user: User | null;
   accessToken: string | null;
@@ -10,6 +26,7 @@ interface AuthState {
   setAuth: (user: User, accessToken: string, refreshToken: string) => void;
   setAccessToken: (accessToken: string) => void;
   updateUser: (data: Partial<User>) => void;
+  loginDemoUser: () => void;
   logout: () => void;
   setLoading: (loading: boolean) => void;
 }
@@ -21,23 +38,35 @@ const STORAGE_KEYS = {
 };
 
 // Khôi phục dữ liệu ban đầu từ localStorage (nếu có)
-const initialUser = (() => {
+const getInitialState = () => {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.USER);
-    return raw ? JSON.parse(raw) : null;
+    const user = raw ? JSON.parse(raw) : DEMO_USER; // Mặc định cung cấp demo user để thuận tiện phát triển
+    const accessToken = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) || 'demo_access_token';
+    const refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN) || 'demo_refresh_token';
+    return {
+      user,
+      accessToken,
+      refreshToken,
+      isAuthenticated: !!user,
+    };
   } catch {
-    return null;
+    return {
+      user: DEMO_USER,
+      accessToken: 'demo_access_token',
+      refreshToken: 'demo_refresh_token',
+      isAuthenticated: true,
+    };
   }
-})();
+};
 
-const initialAccessToken = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
-const initialRefreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+const initial = getInitialState();
 
 export const useAuthStore = create<AuthState>((set) => ({
-  user: initialUser,
-  accessToken: initialAccessToken,
-  refreshToken: initialRefreshToken,
-  isAuthenticated: !!(initialUser && initialAccessToken),
+  user: initial.user,
+  accessToken: initial.accessToken,
+  refreshToken: initial.refreshToken,
+  isAuthenticated: initial.isAuthenticated,
   isLoading: false,
 
   setAuth: (user, accessToken, refreshToken) => {
@@ -68,6 +97,19 @@ export const useAuthStore = create<AuthState>((set) => ({
     });
   },
 
+  loginDemoUser: () => {
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(DEMO_USER));
+    localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, 'demo_access_token');
+    localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, 'demo_refresh_token');
+    set({
+      user: DEMO_USER,
+      accessToken: 'demo_access_token',
+      refreshToken: 'demo_refresh_token',
+      isAuthenticated: true,
+      isLoading: false,
+    });
+  },
+
   logout: () => {
     localStorage.removeItem(STORAGE_KEYS.USER);
     localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
@@ -84,4 +126,3 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   setLoading: (isLoading) => set({ isLoading }),
 }));
-

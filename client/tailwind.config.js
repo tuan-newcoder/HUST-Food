@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
@@ -23,6 +24,14 @@ export default {
           border: '#E2E8F0',
           bg: '#F8FAFC',
           surface: '#FFFFFF',
+        },
+        dark: {
+          bg: '#0B0F19',
+          surface: '#151D2C',
+          subsurface: '#1E293B',
+          border: '#334155',
+          text: '#F8FAFC',
+          muted: '#94A3B8',
         },
         accent: {
           50: '#fffbeb',

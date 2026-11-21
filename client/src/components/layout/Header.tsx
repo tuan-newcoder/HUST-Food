@@ -1,11 +1,40 @@
 import React, { useState } from 'react';
+import {
+  Search,
+  Bell,
+  MessageSquare,
+  LogIn,
+  User as UserIcon,
+  Bookmark,
+  LogOut,
+  ChevronDown,
+  X,
+  Menu,
+} from 'lucide-react';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { Avatar } from '@/components/common/Avatar';
+import { Dropdown } from '@/components/common/Dropdown';
+import { Button } from '@/components/common/Button';
+import { ThemeToggle } from '@/components/common/ThemeToggle';
+import { toast } from '@/components/feedback/Toast';
 
 interface HeaderProps {
   onSearch?: (query: string) => void;
+  onOpenProfile?: () => void;
+  onOpenBookmarks?: () => void;
+  onOpenAuth?: () => void;
+  onToggleMobileMenu?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onSearch = () => {} }) => {
+export const Header: React.FC<HeaderProps> = ({
+  onSearch = () => {},
+  onOpenProfile,
+  onOpenBookmarks,
+  onOpenAuth,
+  onToggleMobileMenu,
+}) => {
   const [searchValue, setSearchValue] = useState('');
+  const { user, isAuthenticated, logout } = useAuthStore();
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -13,60 +42,142 @@ export const Header: React.FC<HeaderProps> = ({ onSearch = () => {} }) => {
     }
   };
 
+  const handleClearSearch = () => {
+    setSearchValue('');
+    onSearch('');
+  };
+
+  const handleLogout = () => {
+    logout();
+    toast.info('Bạn đã đăng xuất thành công');
+  };
+
   return (
-    <header className="sticky top-0 z-20 bg-[#F8FAFC]/90 backdrop-blur-md py-4 px-8 border-b border-[#E2E8F0]/80">
-      <div className="max-w-6xl mx-auto flex items-center justify-between gap-6">
-        {/* Search Bar - Width & height matching Figma specification */}
-        <div className="flex-1 max-w-[760px] relative">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#64748B]">
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8"/>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
+    <header className="sticky top-0 z-20 bg-slate-50/90 dark:bg-[#0B0F19]/90 backdrop-blur-md py-3.5 px-4 sm:px-6 lg:px-8 border-b border-slate-200/80 dark:border-slate-800 transition-colors duration-150">
+      <div className="max-w-6xl mx-auto flex items-center justify-between gap-3 sm:gap-6">
+        {/* Mobile Menu Toggle Button */}
+        {onToggleMobileMenu && (
+          <button
+            type="button"
+            onClick={onToggleMobileMenu}
+            aria-label="Mở menu"
+            className="lg:hidden min-w-[44px] min-h-[44px] rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center justify-center shadow-sm"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        )}
+
+        {/* Search Bar */}
+        <div className="flex-1 max-w-[720px] relative">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+            <Search className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <input
             type="text"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Tìm kiếm bún cá, cơm bình dân, quán xá quanh Bách Khoa..."
-            className="w-full h-[50px] pl-11 pr-4 rounded-[14px] bg-white border border-[#E2E8F0] text-sm text-[#0F172A] placeholder-[#94A3B8] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#E11D48]/20 focus:border-[#E11D48] transition-all"
+            placeholder="Tìm bún cá, cơm bình dân, quán xá quanh Bách Khoa..."
+            className="w-full h-11 sm:h-12 pl-10 pr-9 rounded-xl bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-brand-600 transition-all"
           />
+          {searchValue && (
+            <button
+              type="button"
+              onClick={handleClearSearch}
+              aria-label="Xóa tìm kiếm"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         {/* Right Action Icons */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Theme Mode Toggle Button */}
+          <ThemeToggle />
+
           {/* Notification Button */}
           <button
+            type="button"
             title="Thông báo"
-            className="w-[46px] h-[46px] rounded-xl bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] hover:bg-slate-50 flex items-center justify-center relative shadow-sm transition"
+            onClick={() => toast.info('Chưa có thông báo mới')}
+            className="min-w-[44px] min-h-[44px] rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center justify-center relative shadow-sm transition"
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
-              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
-            </svg>
-            {/* Unread badge dot */}
-            <span className="w-2.5 h-2.5 rounded-full bg-[#E11D48] absolute top-2.5 right-2.5 ring-2 ring-white" />
+            <Bell className="w-5 h-5" />
+            <span className="w-2.5 h-2.5 rounded-full bg-brand-600 absolute top-2.5 right-2.5 ring-2 ring-white dark:ring-slate-800" />
           </button>
 
           {/* Chat / Messages Button */}
           <button
+            type="button"
             title="Tin nhắn"
-            className="w-[46px] h-[46px] rounded-xl bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A] hover:bg-slate-50 flex items-center justify-center shadow-sm transition"
+            onClick={() => toast.info('Tính năng tin nhắn đang phát triển')}
+            className="hidden sm:flex min-w-[44px] min-h-[44px] rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700 items-center justify-center shadow-sm transition"
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </svg>
+            <MessageSquare className="w-5 h-5" />
           </button>
 
-          {/* Avatar Profile mini */}
-          <button className="flex items-center gap-2 pl-2 cursor-pointer">
-            <img
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces"
-              alt="Avatar"
-              className="w-10 h-10 rounded-full object-cover ring-2 ring-rose-200"
+          {/* User Auth Section */}
+          {isAuthenticated && user ? (
+            <Dropdown
+              trigger={
+                <div className="flex items-center gap-2 min-h-[44px] pl-1.5 pr-2 py-1 rounded-xl hover:bg-slate-100/70 dark:hover:bg-slate-800 transition cursor-pointer select-none">
+                  <Avatar
+                    src={user.avatarUrl}
+                    name={user.fullName}
+                    size="md"
+                    className="ring-2 ring-rose-200 dark:ring-rose-900"
+                  />
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden sm:block" />
+                </div>
+              }
+              items={[
+                {
+                  label: (
+                    <div className="text-left py-0.5">
+                      <div className="font-bold text-slate-900 dark:text-slate-100 truncate text-sm">
+                        {user.fullName}
+                      </div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                        @{user.username}
+                      </div>
+                    </div>
+                  ),
+                  onClick: onOpenProfile,
+                },
+                {
+                  divider: true,
+                  label: 'Trang cá nhân',
+                  icon: <UserIcon className="w-4 h-4 text-brand-600" />,
+                  onClick: onOpenProfile,
+                },
+                {
+                  label: 'Mục đã lưu (Bookmarks)',
+                  icon: <Bookmark className="w-4 h-4 text-amber-500" />,
+                  onClick: onOpenBookmarks,
+                },
+                {
+                  divider: true,
+                  label: 'Đăng xuất',
+                  icon: <LogOut className="w-4 h-4 text-red-500" />,
+                  danger: true,
+                  onClick: handleLogout,
+                },
+              ]}
             />
-          </button>
+          ) : (
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={onOpenAuth}
+              leftIcon={<LogIn className="w-4 h-4" />}
+              className="min-h-[44px]"
+            >
+              <span className="hidden sm:inline">Đăng nhập</span>
+              <span className="sm:hidden">Vào</span>
+            </Button>
+          )}
         </div>
       </div>
     </header>
