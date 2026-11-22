@@ -43,7 +43,7 @@ describe('BE1 Test Suite - Full F01 to F10 Implementation', () => {
           username: 'vuong_lead',
           email: 'vuong@hustfood.vn',
           password: 'password123',
-          fullName: 'Nguyễn Văn Vương',
+          fullName: 'Nguyễn Duy Vương',
         });
 
       assert.equal(res.status, 201);
@@ -65,7 +65,7 @@ describe('BE1 Test Suite - Full F01 to F10 Implementation', () => {
           username: 'vuong_lead',
           email: 'different@hustfood.vn',
           password: 'password123',
-          fullName: 'Nguyễn Văn Vương',
+          fullName: 'Nguyễn Duy Vương',
         });
 
       assert.equal(res.status, 400);
@@ -198,12 +198,12 @@ describe('BE1 Test Suite - Full F01 to F10 Implementation', () => {
         .put('/api/v1/users/me')
         .set('Authorization', `Bearer ${user1Token}`)
         .send({
-          fullName: 'Nguyễn Văn Vương - Backend Lead',
+          fullName: 'Nguyễn Duy Vương - Backend Lead',
           bio: 'Chuyên gia tối ưu Node.js & MongoDB',
         });
 
       assert.equal(res.status, 200);
-      assert.equal(res.body.data.user.fullName, 'Nguyễn Văn Vương - Backend Lead');
+      assert.equal(res.body.data.user.fullName, 'Nguyễn Duy Vương - Backend Lead');
       assert.equal(res.body.data.user.bio, 'Chuyên gia tối ưu Node.js & MongoDB');
     });
 
