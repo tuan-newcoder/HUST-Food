@@ -15,7 +15,7 @@
     "mongoose",
     "nodejs"
   ],
-  "author": "BE 1 (Backend Lead)",
+  "author": "BE 1",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -4,7 +4,6 @@ const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const mongoose = require('mongoose');
 
-// Set env variables for test
 process.env.JWT_ACCESS_SECRET = 'test_access_secret_123';
 process.env.JWT_REFRESH_SECRET = 'test_refresh_secret_123';
 process.env.NODE_ENV = 'test';

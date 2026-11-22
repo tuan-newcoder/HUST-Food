@@ -1,4 +1,4 @@
-# HUST Food - Backend Documentation (Phân hệ BE 1 - Hoàn thành Tuần 1 đến Tuần 3)
+# HUST Food - Backend Documentation
 
 Tài liệu hướng dẫn kỹ thuật do **BE 1 (Backend Lead)** thiết lập và bàn giao cho **FE 1** (ghép API) và **BE 2** (tiếp tục phát triển nhánh F11 – F25).
 
