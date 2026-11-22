@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "hust-food-be1-collection",
+    "_postman_id": "4fa8bc63-42e1-4c6e-827c-31a89c9e8432",
     "name": "HUST Food - BE1 API Collection (F01 - F10)",
     "description": "Bộ API hoàn chỉnh cho Phân hệ 1 & 2 (F01 đến F10) do BE 1 bàn giao cho FE 1 và Team",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
