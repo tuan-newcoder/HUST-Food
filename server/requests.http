@@ -1,0 +1,135 @@
+@baseUrl = http://localhost:5000/api/v1
+@token = {{login.response.body.data.accessToken}}
+
+### 1. [F01] Đăng ký tài khoản
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "foodie_tester",
+  "email": "foodie_tester@hust.edu.vn",
+  "password": "password123",
+  "fullName": "Nguyễn Văn Reviewer"
+}
+
+### 2. [F01] Đăng nhập nhận Token
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "emailOrUsername": "foodie_tester",
+  "password": "password123"
+}
+
+### 3. [F01] Làm mới Token
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{login.response.body.data.refreshToken}}"
+}
+
+### 4. [F02] Lấy thông tin cá nhân (My Profile)
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{token}}
+
+### 5. [F02] Cập nhật thông tin cá nhân
+PUT {{baseUrl}}/users/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "fullName": "Nguyễn Văn Reviewer VIP",
+  "bio": "Đam mê review các quán ngon vỉa hè Hà Nội"
+}
+
+### 6. [F07] Đăng bài REVIEW Quán ăn (Tự động tính điểm overall)
+# @name createReview
+POST {{baseUrl}}/posts
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "postType": "REVIEW",
+  "title": "Bún cá cay Phố Huế chuẩn vị Hải Phòng!",
+  "content": "Nước dùng cay tê ngọt xương, cá rán giòn tan, ăn kèm rau cần cực hợp.",
+  "images": [
+    "https://res.cloudinary.com/hustfood/image/upload/v1/bunca1.jpg"
+  ],
+  "tags": ["bun-ca", "hai-phong", "an-trua"],
+  "restaurantInfo": {
+    "name": "Bún Cá Cay Gia Truyền",
+    "address": "Số 15 Phố Huế, Hai Bà Trưng, Hà Nội",
+    "priceRange": {
+      "min": 35000,
+      "max": 55000
+    },
+    "ratings": {
+      "taste": 5,
+      "price": 5,
+      "hygiene": 4,
+      "service": 5
+    },
+    "location": {
+      "type": "Point",
+      "coordinates": [105.8515, 21.0182]
+    }
+  }
+}
+
+### 7. [F08] Đăng bài RECIPE Công thức nấu ăn
+# @name createRecipe
+POST {{baseUrl}}/posts
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "postType": "RECIPE",
+  "title": "Cách nấu Phở Bò sốt vang thơm lừng tại nhà",
+  "content": "Thịt bò dẻ sườn mềm tan, nước sốt sánh đỏ hấp dẫn cho bữa sáng gia đình.",
+  "images": [
+    "https://res.cloudinary.com/hustfood/image/upload/v1/phobo.jpg"
+  ],
+  "tags": ["pho-bo", "sot-vang", "nau-an-tai-nha"],
+  "recipeInfo": {
+    "cookingTimeMinutes": 60,
+    "estimatedCost": 120000,
+    "servings": 4,
+    "difficulty": "MEDIUM",
+    "ingredients": [
+      { "name": "Dẻ sườn bò", "amount": "500g" },
+      { "name": "Bánh phở tươi", "amount": "1kg" },
+      { "name": "Gấc hoặc rượu vang đỏ", "amount": "50ml" }
+    ],
+    "steps": [
+      { "stepNumber": 1, "instruction": "Ướp bò với tỏi băm, gừng, ngũ vị hương và rượu vang", "imageUrl": "" },
+      { "stepNumber": 2, "instruction": "Xào săn bò và hầm nhừ trong 45 phút", "imageUrl": "" }
+    ]
+  }
+}
+
+### 8. [F05, F06] Bảng tin Newsfeed (Infinite Scroll Cursor)
+GET {{baseUrl}}/posts/feed?postType=ALL&limit=10
+Authorization: Bearer {{token}}
+
+### 9. [F09] Top Tags thịnh hành
+GET {{baseUrl}}/posts/tags/trending?limit=10
+
+### 10. [F05, F07] Chi tiết bài viết theo ID
+@postId = {{createReview.response.body.data.post._id}}
+GET {{baseUrl}}/posts/{{postId}}
+Authorization: Bearer {{token}}
+
+### 11. [F10] Cập nhật bài viết
+PUT {{baseUrl}}/posts/{{postId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Bún cá cay Phố Huế chuẩn vị Hải Phòng (Đã cập nhật)"
+}
+
+### 12. [F10] Xóa bài viết
+DELETE {{baseUrl}}/posts/{{postId}}
+Authorization: Bearer {{token}}
